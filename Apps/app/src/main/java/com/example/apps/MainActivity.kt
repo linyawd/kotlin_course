@@ -2,93 +2,149 @@ package com.example.apps
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.apps.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    // Тег для логування у Logcat
-    private val TAG = "CalculatorLog"
+    private lateinit var binding: ActivityMainBinding
+
+    private val TAG = "FullCalculatorLog"
+
+    private var firstOperand: Double? = null
+    private var currentOperation: String? = null
+    private var isNewInput: Boolean = true // чи починається новий ввід числа
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        val etNumber1 = findViewById<EditText>(R.id.etNumber1)
-        val etNumber2 = findViewById<EditText>(R.id.etNumber2)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val btnAdd = findViewById<Button>(R.id.btnAdd)
-        val btnSubtract = findViewById<Button>(R.id.btnSubtract)
-        val btnMultiply = findViewById<Button>(R.id.btnMultiply)
-        val btnDivide = findViewById<Button>(R.id.btnDivide)
-        val btnClear = findViewById<Button>(R.id.btnClear)
+        setupClickListeners()
+    }
 
-        val tvResult = findViewById<TextView>(R.id.tvResult)
+    private fun setupClickListeners() {
+        val digitButtons = mapOf(
+            binding.btn0 to "0", binding.btn1 to "1", binding.btn2 to "2",
+            binding.btn3 to "3", binding.btn4 to "4", binding.btn5 to "5",
+            binding.btn6 to "6", binding.btn7 to "7", binding.btn8 to "8",
+            binding.btn9 to "9"
+        )
 
-        btnAdd.setOnClickListener {
-            calculate('+', etNumber1, etNumber2, tvResult)
+        for ((button, digit) in digitButtons) {
+            button.setOnClickListener { onDigitClick(digit) }
         }
 
-        btnSubtract.setOnClickListener {
-            calculate('-', etNumber1, etNumber2, tvResult)
-        }
+        binding.btnDot.setOnClickListener { onDotClick() }
 
-        btnMultiply.setOnClickListener {
-            calculate('*', etNumber1, etNumber2, tvResult)
-        }
+        binding.btnAdd.setOnClickListener { onOperationClick("+") }
+        binding.btnSubtract.setOnClickListener { onOperationClick("-") }
+        binding.btnMultiply.setOnClickListener { onOperationClick("*") }
+        binding.btnDivide.setOnClickListener { onOperationClick("/") }
 
-        btnDivide.setOnClickListener {
-            calculate('/', etNumber1, etNumber2, tvResult)
-        }
+        binding.btnEquals.setOnClickListener { onEqualsClick() }
 
-        btnClear.setOnClickListener {
-            etNumber1.text.clear()
-            etNumber2.text.clear()
-            tvResult.text = "Результат: "
-            Log.d(TAG, "Поля та результат очищено")
+        // Очищення
+        binding.btnClear.setOnClickListener { clearAll() }
+
+        // Стирання останньої цифри
+        binding.btnBackspace.setOnClickListener { onBackspaceClick() }
+    }
+
+
+    private fun onDigitClick(digit: String) {
+        val currentText = binding.tvDisplay.text.toString()
+
+        if (isNewInput || currentText == "0" || currentText == "Помилка") {
+            binding.tvDisplay.text = digit
+            isNewInput = false
+        } else {
+            binding.tvDisplay.text = currentText + digit
+        }
+        Log.d(TAG, "Введено цифру: $digit. На екрані: ${binding.tvDisplay.text}")
+    }
+
+
+    private fun onDotClick() {
+        val currentText = binding.tvDisplay.text.toString()
+
+        if (isNewInput) {
+            binding.tvDisplay.text = "0."
+            isNewInput = false
+        } else if (!currentText.contains(".")) {
+            binding.tvDisplay.text = "$currentText."
         }
     }
 
-    private fun calculate(
-        operation: Char,
-        etNumber1: EditText,
-        etNumber2: EditText,
-        tvResult: TextView
-    ) {
-        val str1 = etNumber1.text.toString().trim()
-        val str2 = etNumber2.text.toString().trim()
 
-        if (str1.isEmpty() || str2.isEmpty()) {
-            tvResult.text = "Будь ласка, введіть обидва числа"
-            Log.w(TAG, "Спроба обчислення з порожніми полями")
-            return
-        }
+    private fun onOperationClick(operation: String) {
+        val currentText = binding.tvDisplay.text.toString()
 
-        val num1 = str1.toDouble()
-        val num2 = str2.toDouble()
+        if (currentText == "Помилка") return
 
-        Log.d(TAG, "Виконується операція '$operation' з числами: $num1 та $num2")
+        firstOperand = currentText.toDoubleOrNull()
+        currentOperation = operation
+        isNewInput = true
 
-        if (operation == '/' && num2 == 0.0) {
-            tvResult.text = "Помилка: ділення на нуль неможливе!"
-            Log.w(TAG, "Помилка: Спроба ділення числа $num1 на нуль!")
+        Log.d(TAG, "Обрано операцію '$operation' для числа $firstOperand")
+    }
+
+    private fun onEqualsClick() {
+        val operation = currentOperation ?: return
+        val first = firstOperand ?: return
+        val secondText = binding.tvDisplay.text.toString()
+
+        if (secondText == "Помилка") return
+
+        val second = secondText.toDoubleOrNull() ?: return
+
+        Log.d(TAG, "Обчислення: $first $operation $second")
+
+        if (operation == "/" && second == 0.0) {
+            binding.tvDisplay.text = "Помилка"
+            Log.w(TAG, "Помилка: ділення на нуль!")
+            resetState()
             return
         }
 
         val result = when (operation) {
-            '+' -> num1 + num2
-            '-' -> num1 - num2
-            '*' -> num1 * num2
-            '/' -> num1 / num2
+            "+" -> first + second
+            "-" -> first - second
+            "*" -> first * second
+            "/" -> first / second
             else -> 0.0
         }
 
-        val formattedResult = formatResult(result)
+        binding.tvDisplay.text = formatResult(result)
+        Log.d(TAG, "Результат: ${binding.tvDisplay.text}")
 
-        tvResult.text = "Результат: $formattedResult"
-        Log.d(TAG, "Результат обчислення: $formattedResult")
+        resetState()
+        isNewInput = true
+    }
+
+    private fun onBackspaceClick() {
+        val currentText = binding.tvDisplay.text.toString()
+        if (isNewInput || currentText == "Помилка") return
+
+        if (currentText.length > 1) {
+            binding.tvDisplay.text = currentText.dropLast(1)
+        } else {
+            binding.tvDisplay.text = "0"
+            isNewInput = true
+        }
+    }
+
+    private fun clearAll() {
+        binding.tvDisplay.text = "0"
+        resetState()
+        isNewInput = true
+        Log.d(TAG, "Калькулятор повністю скинуто")
+    }
+
+    private fun resetState() {
+        firstOperand = null
+        currentOperation = null
     }
 
     private fun formatResult(value: Double): String {
