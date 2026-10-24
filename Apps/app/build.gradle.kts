@@ -33,6 +33,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
         }
 }
 
@@ -42,6 +43,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core.ktx)
     implementation(libs.material)
+    implementation(libs.androidx.lifecycle.common.java8)
+    implementation("com.jakewharton.timber:timber:5.0.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)

@@ -1,5 +1,6 @@
 package com.example.apps
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +23,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupClickListeners()
+
+        val audioPlayer = AudioPlayer()
+        lifecycle.addObserver(audioPlayer)
+
+        val analyticsTracker = AnalyticsTracker()
+        lifecycle.addObserver(analyticsTracker)
     }
 
     private fun setupClickListeners() {
@@ -50,8 +57,12 @@ class MainActivity : AppCompatActivity() {
 
         // Стирання останньої цифри
         binding.btnBackspace.setOnClickListener { onBackspaceClick() }
-    }
 
+        binding.btnBracket.setOnClickListener {
+            val intent = Intent(this, SecondActivity::class.java)
+            startActivity(intent)
+        }
+    }
 
     private fun onDigitClick(digit: String) {
         val currentText = binding.tvDisplay.text.toString()
@@ -65,7 +76,6 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "Введено цифру: $digit. На екрані: ${binding.tvDisplay.text}")
     }
 
-
     private fun onDotClick() {
         val currentText = binding.tvDisplay.text.toString()
 
@@ -76,7 +86,6 @@ class MainActivity : AppCompatActivity() {
             binding.tvDisplay.text = "$currentText."
         }
     }
-
 
     private fun onOperationClick(operation: String) {
         val currentText = binding.tvDisplay.text.toString()
