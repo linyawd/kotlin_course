@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ProcessLifecycleOwner
 import timber.log.Timber
 
 class MyApp : Application() {
@@ -14,6 +15,8 @@ class MyApp : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
+
+        ProcessLifecycleOwner.get().lifecycle.addObserver(BackgroundDetector())
 
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
 
