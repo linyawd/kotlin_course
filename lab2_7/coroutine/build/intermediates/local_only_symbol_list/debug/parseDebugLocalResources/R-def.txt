@@ -1,0 +1,26 @@
+R_DEF: Internal format may change without notice
+local
+color black
+color white
+drawable ic_launcher_background
+drawable ic_launcher_foreground
+id btnLoadData
+id linearLayout
+id linearLayout2
+id main
+id progressBar
+id tvCityCaption
+id tvCityValue
+id tvTemperatureCaption
+id tvTemperatureValue
+layout activity_main
+mipmap ic_launcher
+mipmap ic_launcher_round
+string app_name
+string button
+string city
+string temperature
+style Base.Theme.CoroutineApplication
+style Theme.CoroutineApplication
+xml backup_rules
+xml data_extraction_rules
