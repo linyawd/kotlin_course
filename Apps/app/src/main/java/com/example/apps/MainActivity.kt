@@ -29,6 +29,15 @@ class MainActivity : AppCompatActivity() {
 
         val analyticsTracker = AnalyticsTracker()
         lifecycle.addObserver(analyticsTracker)
+
+        UserTracker.register(this)
+        Log.d("MemoryLeakTest", "Зареєстровано слухачів у UserTracker: ${UserTracker.getListenersCount()}")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        UserTracker.unregister(this)
+        Log.d("MemoryLeakTest", "Видалено слухача. Залишилось: ${UserTracker.getListenersCount()}")
     }
 
     private fun setupClickListeners() {
