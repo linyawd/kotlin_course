@@ -1,0 +1,9 @@
+com.example.coroutine-pngs-0 /Users/daria/uni/lins/kotlin_course/lab2_8/coroutine/build/generated/res/pngs/debug
+com.example.coroutine-resValues-1 /Users/daria/uni/lins/kotlin_course/lab2_8/coroutine/build/generated/res/resValues/debug
+com.example.coroutine-updated_navigation_xml-2 /Users/daria/uni/lins/kotlin_course/lab2_8/coroutine/build/generated/updated_navigation_xml/debug
+com.example.coroutine-packageDebugResources-3 /Users/daria/uni/lins/kotlin_course/lab2_8/coroutine/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.example.coroutine-packageDebugResources-4 /Users/daria/uni/lins/kotlin_course/lab2_8/coroutine/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.example.coroutine-debug-5 /Users/daria/uni/lins/kotlin_course/lab2_8/coroutine/build/intermediates/merged_res/debug/mergeDebugResources
+com.example.coroutine-debug-6 /Users/daria/uni/lins/kotlin_course/lab2_8/coroutine/src/debug/res
+com.example.coroutine-main-7 /Users/daria/uni/lins/kotlin_course/lab2_8/coroutine/src/main/res
+gradleHome-0 /Users/daria/.gradle
