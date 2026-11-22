@@ -25,11 +25,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 
 @Composable
-fun TimerScreen(modifier: Modifier = Modifier) {
+fun TimerScreen(
+    seconds: Int,
+    onStopClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
     var isRunning by remember { mutableStateOf(false) }
 
@@ -71,6 +77,15 @@ fun TimerScreen(modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.headlineSmall
         )
 
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "$seconds с",
+            fontSize = 56.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
+
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
@@ -97,8 +112,7 @@ fun TimerScreen(modifier: Modifier = Modifier) {
 
         Button(
             onClick = {
-                val intent = Intent(context, TimerForegroundService::class.java)
-                context.stopService(intent)
+                onStopClick()
                 isRunning = false
             },
             colors = ButtonDefaults.buttonColors(
